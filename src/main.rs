@@ -46,8 +46,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             thread::sleep(std::time::Duration::from_millis(1));
         }
-        // Wichtig: Bars stehen lassen statt clearen.
-        // abandon (nicht finish!): finish() würde alle Bars auf voll (= max) setzen.
+        // Keep the bars visible instead of clearing them.
+        // abandon (not finish!): finish() would fill all bars to max.
         for (progress_bar, model) in &progress_bars {
             progress_bar.set_position(model.num_requests as u64);
             progress_bar.abandon();

@@ -4,13 +4,13 @@ pub enum FetchError {
     Message(String),
 }
 
-/// Fehler des Clients.
+/// Client error.
 #[derive(Debug, thiserror::Error)]
 pub enum ClientError {
-    /// HTTP-Fehler beim dynamischen Download (nur Release-Pfad).
-    #[error("HTTP-Fehler: {0}")]
+    /// HTTP error while downloading (release path only).
+    #[error("HTTP error: {0}")]
     Http(#[from] reqwest::Error),
-    #[error("Parsing-Fehler: {0}")]
+    #[error("parse error: {0}")]
     Parsing(#[from] FetchError),
 }
 

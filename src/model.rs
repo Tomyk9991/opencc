@@ -1,15 +1,15 @@
 use std::fmt::Display;
 
-/// Ein Modell aus der Go-Nutzungstabelle (`data-slot="model-row"`).
+/// A model from the Go usage table (`data-slot="model-row"`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Model {
-    /// Slug aus `data-model`, z. B. `"muse-spark-1.3-contributor"`.
+    /// Slug from `data-model`, e.g. `"muse-spark-1.3-contributor"`.
     pub id: String,
-    /// Anzeigename, z. B. `"Muse Spark 1.3 Contributor"`.
+    /// Display name, e.g. `"Muse Spark 1.3 Contributor"`.
     pub name: String,
-    /// Geschätzte Anfragen / 5 Std., z. B. `45300` (aus `"45.300"`).
+    /// Estimated requests / 5h, e.g. `45300` (from `"45.300"`).
     pub num_requests: u32,
-    /// Zusätzliche Marker, z. B. `["Neu", "4× Nutzung"]` oder `["begrenzte Regionen"]`.
+    /// Additional markers, e.g. `["Neu", "4× Nutzung"]` or `["begrenzte Regionen"]`.
     pub markers: Markers,
 }
 
@@ -21,6 +21,11 @@ pub struct Markers {
 impl Markers {
     pub fn new(markers: Vec<String>) -> Self {
         Self { markers }
+    }
+
+    #[allow(dead_code)]
+    pub fn iter(&self) -> std::slice::Iter<'_, String> {
+        self.markers.iter()
     }
 }
 
