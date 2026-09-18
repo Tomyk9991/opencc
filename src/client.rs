@@ -79,6 +79,9 @@ impl OpenCodeClient {
                     .next()
                     .map(|el| el.text().collect::<String>())
                     .unwrap_or_default();
+                // Free models show `∞` (`data-unlimited` row attribute, `title="unbegrenzt"`).
+                let unlimited = row.value().attr("data-unlimited").is_some()
+                    || raw_requests.contains('∞');
                 let digits: String = raw_requests
                     .chars()
                     .filter(|c| c.is_ascii_digit())
@@ -123,6 +126,7 @@ impl OpenCodeClient {
                     id,
                     name,
                     num_requests,
+                    unlimited,
                     markers: Markers::new(markers),
                 })
             })
@@ -147,7 +151,7 @@ mod tests {
         let html = include_str!("../HtmlResponse.html");
         let models = OpenCodeClient::parse(html).expect("parse failed");
 
-        assert_eq!(models.len(), 10, "expected 10 model-row rows");
+        assert_eq!(models.len(), 11, "expected 11 model-row rows");
 
         let muse = models
             .iter()
@@ -169,12 +173,20 @@ mod tests {
             flash.markers.iter().any(|m| m == "4× Nutzung"),
             "missing marker '4× Nutzung'"
         );
+
+        let free = models
+            .iter()
+            .find(|m| m.id == "union-alpha")
+            .expect("missing Union Alpha Free");
+        assert_eq!(free.name, "Union Alpha Free");
+        assert!(free.unlimited, "union-alpha must be unlimited");
+        assert_eq!(free.num_requests, 0);
     }
 
     #[tokio::test]
     async fn endpoint_uses_fixture_in_test() {
         let client = OpenCodeClient::new();
         let models = client.models().await.expect("endpoint failed");
-        assert_eq!(models.len(), 10);
+        assert_eq!(models.len(), 11);
     }
 }

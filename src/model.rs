@@ -8,7 +8,10 @@ pub struct Model {
     /// Display name, e.g. `"Muse Spark 1.3 Contributor"`.
     pub name: String,
     /// Estimated requests / 5h, e.g. `45300` (from `"45.300"`).
+    /// `0` for free models with unlimited requests (see `unlimited`).
     pub num_requests: u32,
+    /// Free model with unlimited requests (`∞`), e.g. `"Union Alpha Free"`.
+    pub unlimited: bool,
     /// Additional markers, e.g. `["Neu", "4× Nutzung"]` or `["begrenzte Regionen"]`.
     pub markers: Markers,
 }
@@ -45,10 +48,11 @@ impl Display for Markers {
 
 impl Display for Model {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} ({}): {}{}",
-            self.name, self.id, self.num_requests, self.markers
-        )
+        let requests = if self.unlimited {
+            "∞".to_string()
+        } else {
+            self.num_requests.to_string()
+        };
+        write!(f, "{} ({}): {}{}", self.name, self.id, requests, self.markers)
     }
 }
