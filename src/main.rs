@@ -23,7 +23,20 @@ fn rainbow_bar(width: usize) -> String {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = OpenCodeClient::new();
-    let models = client.models().await?;
+    let models = match client.models().await {
+        Ok(models) if !models.is_empty() => models,
+        Ok(_) => {
+            eprintln!(
+                "Daten konnten nicht erfolgreich geladen werden: Die Modelliste von {} ist leer (Seitenlayout erneut geaendert?).",
+                client::GO_URL
+            );
+            std::process::exit(1);
+        }
+        Err(e) => {
+            eprintln!("Daten konnten nicht erfolgreich geladen werden: {e}");
+            std::process::exit(1);
+        }
+    };
 
     let multi_progressbar = MultiProgress::new();
     let sty = ProgressStyle::with_template("{bar:40.yellow.transparent} {pos:>7} {msg}")?

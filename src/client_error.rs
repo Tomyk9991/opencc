@@ -2,6 +2,9 @@
 pub enum FetchError {
     #[error("{0}")]
     Message(String),
+    /// Parser found no models at all (layout changed again or download failed silently).
+    #[error("keine Modelle gefunden: Das Seitenlayout hat sich vermutlich erneut geändert")]
+    Empty,
 }
 
 /// Client error.

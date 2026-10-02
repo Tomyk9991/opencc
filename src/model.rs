@@ -1,18 +1,19 @@
 use std::fmt::Display;
 
-/// A model from the Go usage table (`data-slot="model-row"`).
+/// A model from the Go comparison table (`go-plan-chart`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Model {
-    /// Slug from `data-model`, e.g. `"muse-spark-1.3-contributor"`.
+    /// Slug derived from the display name, e.g. `"muse-spark-1.3-contributor"`.
+    /// (Previously from `data-model`; now generated via slugify.)
     pub id: String,
     /// Display name, e.g. `"Muse Spark 1.3 Contributor"`.
     pub name: String,
     /// Estimated requests / 5h, e.g. `45300` (from `"45.300"`).
     /// `0` for free models with unlimited requests (see `unlimited`).
     pub num_requests: u32,
-    /// Free model with unlimited requests (`∞`), e.g. `"Union Alpha Free"`.
+    /// Free model with unlimited requests (`∞`), e.g. `"Space Bunny Free"`.
     pub unlimited: bool,
-    /// Additional markers, e.g. `["Neu", "4× Nutzung"]` or `["begrenzte Regionen"]`.
+    /// Additional markers, e.g. `["Neu", "begrenzte Zeit"]` or `["begrenzte Regionen"]`.
     pub markers: Markers,
 }
 
@@ -53,6 +54,10 @@ impl Display for Model {
         } else {
             self.num_requests.to_string()
         };
-        write!(f, "{} ({}): {}{}", self.name, self.id, requests, self.markers)
+        write!(
+            f,
+            "{} ({}): {}{}",
+            self.name, self.id, requests, self.markers
+        )
     }
 }
